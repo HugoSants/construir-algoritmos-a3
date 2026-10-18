@@ -8,12 +8,10 @@ TOKEN = os.getenv("SPTRANS_TOKEN")
 LINHA = "8000"
 URL = "http://api.olhovivo.sptrans.com.br/v2.1"
 
-# Login (a Session guarda o cookie de autenticação)
 s = requests.Session()
 login = s.post(f"{URL}/Login/Autenticar?token={TOKEN}")
 print("Login:", login.text)
 
-# A busca devolve os dois sentidos da linha, cada um com seu código "cl"
 linhas = s.get(f"{URL}/Linha/Buscar?termosBusca={LINHA}").json()
 
 paradas = []
@@ -22,11 +20,10 @@ for l in linhas:
 
 m = Map(location=[paradas[3]["py"], paradas[3]["px"]], zoom_start=14)
 
-# Paradas (azul)
+
 for i in paradas:
     Marker(location=[i["py"], i["px"]], popup=i["np"], icon=Icon(color="blue")).add_to(m)
 
-# Ônibus em tempo real (vermelho)
 for l in linhas:
     posicao = s.get(f"{URL}/Posicao/Linha?codigoLinha={l['cl']}").json()
     for o in posicao["vs"]:
